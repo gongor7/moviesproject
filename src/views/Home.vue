@@ -1,6 +1,12 @@
 <template>
     <v-app>
       <v-container fluid>
+            <!-- Botón de Iniciar Sesión -->
+        <v-app-bar app>
+            <v-toolbar-title>Películas App</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn @click="goToLogin" color="primary">Iniciar Sesión</v-btn>
+        </v-app-bar>
         <!-- Buscador -->
         <v-row>
           <v-col>
@@ -112,6 +118,9 @@
       goToMovieDetail(imdbID) {
       this.$router.push({ name: 'movie-detail', params: { id: imdbID } });
       console.log("hola")
+    },
+    goToLogin() {
+      this.$router.push({ name: 'login' });
     }
     },
 
