@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto my-4" max-width="344">
+  <v-card class="mx-auto my-4" max-width="344"  @click="handleClick">
     <v-img :src="poster" height="200px"></v-img>
     <v-card-title>{{ title }}</v-card-title>
     <v-card-subtitle>{{ year }}</v-card-subtitle>
@@ -19,6 +19,12 @@ export default {
     year: String,
     imdbID: String,
     Type: String
+  },
+  methods: {
+    handleClick() {
+      this.$emit('card-clicked', this.imdbID);
+      console.log(this.imdbID)
+    }
   }
 }
 </script>
