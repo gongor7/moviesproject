@@ -10,7 +10,7 @@
             prepend-icon="mdi-magnify"
             outlined
             dense
-            @input="searchMovies"
+            @input="onSearchInput"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -40,6 +40,16 @@
           </v-row>
         </v-col>
       </v-row>
+       <!-- Paginación -->
+       <v-row>
+            <v-col>
+              <v-pagination
+                v-model="currentPage"
+                :length="totalPages"
+                @input="searchMovies"
+              ></v-pagination>
+            </v-col>
+          </v-row>
     </v-container>
   </v-app>
 </template>
@@ -55,34 +65,47 @@ export default {
   },
   data() {
     return {
-      movie: [],
-      loading: true,
-      search: ''
+      movies: [],
+      loading: false,
+      search: '',
+      currentPage: 1,
+      totalResults: 0
     }
   },
   computed: {
-    filteredMovie() {
-      return this.movie || null;
+    totalPages() {
+      return Math.ceil(this.totalResults / 10); // 10 resultados por página
     }
   },
   methods: {
+    onSearchInput() {
+      this.currentPage = 1; // Reiniciar a la primera página con cada nueva búsqueda
+      this.searchMovies();
+    },
     async searchMovies() {
       if (this.search.length >= 3) {
         this.loading = true;
         try {
-          const response = await axios.get(`http://www.omdbapi.com/?apikey=f4248097&s=${this.search}`);
+          const response = await axios.get(`http://www.omdbapi.com/?apikey=f4248097&s=${this.search}&page=${this.currentPage}`);
           if (response.data && response.data.Search && response.data.Search.length > 0) {
             this.movies = response.data.Search;
+            this.totalResults = parseInt(response.data.totalResults, 10) || 0;
+            console.log(this.movies);
+            console.log(this.totalResults);
           } else {
-            this.movie = null;
+            this.movies = [];
+            this.totalResults = 0;
           }
         } catch (error) {
           console.error('Error fetching data:', error);
+          this.movies = [];
+          this.totalResults = 0;
         } finally {
           this.loading = false;
         }
       } else {
-        this.movie = [];
+        this.movies = [];
+        this.totalResults = 0;
       }
     }
   }
